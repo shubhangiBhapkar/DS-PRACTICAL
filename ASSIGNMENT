@@ -203,3 +203,19 @@ MPI.Finalize();
 }
 
 }
+
+===============steps=====================
+wget https://downloads.sourceforge.net/project/mpjexpress/releases/mpj-v0_44.tar.gz
+tar -xvzf mpj-v0_44.tar.gz
+sudo mv mpj-v0_44 /opt/mpj
+nano ~/.bashrc
+    export MPJ_HOME=/opt/mpj
+    export PATH=$PATH:$MPJ_HOME/bin
+    export CLASSPATH=$MPJ_HOME/lib/mpj.jar: 
+Press Ctrl + O
+Press Enter
+Ctrl+x
+
+source ~/.bashrc
+javac -cp .:$MPJ_HOME/lib/mpj.jar ArraySumMPI.java
+$MPJ_HOME/bin/mpjrun.sh -np 4 ArraySumMPI
