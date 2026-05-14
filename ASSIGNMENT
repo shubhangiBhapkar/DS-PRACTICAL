@@ -1,0 +1,205 @@
+PRACTICAL 1 - Berkeley Algorithm 
+import java.util.*;
+
+public class BerkeleyAlgorithm {
+
+    static int[] clockTimes = {0, 5, -10, 10};
+    // Index 0 = master, 1,2,3 = slaves (offsets relative to master)
+
+    public static void main(String[] args) {
+        System.out.println("=== Berkeley Algorithm ===\n");
+
+        // Step 1: Show initial clocks
+        System.out.println("Initial clocks (absolute time):");
+        int master = 10; // master's actual time
+        int[] slaves = {master + clockTimes[1], master + clockTimes[2], master + clockTimes[3]};
+        System.out.println("  Master: " + master);
+        for (int i = 0; i < slaves.length; i++)
+            System.out.println("  Slave " + (i+1) + ": " + slaves[i]);
+
+        // Step 2: Master collects all times and computes average
+        int total = master;
+        for (int s : slaves) total += s;
+        int average = total / (slaves.length + 1);
+        System.out.println("\nAverage (synchronized) time: " + average);
+
+        // Step 3: Compute adjustments
+        System.out.println("\nAdjustments to send:");
+        System.out.println("  Master adjust: " + (average - master));
+        for (int i = 0; i < slaves.length; i++)
+            System.out.println("  Slave " + (i+1) + " adjust: " + (average - slaves[i]));
+
+        // Step 4: Apply adjustments
+        System.out.println("\nAfter synchronization:");
+        System.out.println("  Master: " + average);
+        for (int i = 0; i < slaves.length; i++)
+            System.out.println("  Slave " + (i+1) + ": " + (slaves[i] + (average - slaves[i])));
+    }
+}
+
+==================================================================================
+2.client server using RMI 
+
+// MyRemote.java
+import java.rmi.*;
+
+public interface MyRemote extends Remote {
+    String sayHello() throws RemoteException;
+}
+
+// MyRemoteImpl.java
+import java.rmi.*;
+import java.rmi.server.*;
+
+ class MyRemoteImpl extends UnicastRemoteObject implements MyRemote {
+
+    public MyRemoteImpl() throws RemoteException {
+        super();
+    }
+
+    public String sayHello() throws RemoteException {
+        return "Hello from RMI Server!";
+    }
+} 
+
+//Server.java
+import java.rmi.*;
+
+public class Server {
+    public static void main(String[] args) {
+        try {
+            MyRemoteImpl obj = new MyRemoteImpl();
+
+            Naming.rebind("rmi://localhost/MyService", obj);
+
+            System.out.println("RMI Server is running...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+// Client.java
+import java.rmi.*;
+
+public class Client {
+    public static void main(String[] args) {
+        try {
+            MyRemote obj = (MyRemote) Naming.lookup("rmi://localhost/MyService");
+
+            String response = obj.sayHello();
+            System.out.println("Server says: " + response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+===============================================================================
+3. Token Ring
+// TokenRing.java
+import java.util.*;
+
+public class TokenRing {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+
+        int[] processes = new int[n];
+
+        // Initialize processes
+        for (int i = 0; i < n; i++) {
+            processes[i] = i;
+        }
+
+        System.out.print("Enter process having initial token: ");
+        int token = sc.nextInt();
+
+        System.out.print("Enter process requesting critical section: ");
+        int request = sc.nextInt();
+
+        System.out.println("\n--- Token Passing ---");
+
+        int i = token;
+
+        // Pass token until it reaches requesting process
+        while (i != request) {
+            System.out.println("Token passed from Process " + i +
+                               " to Process " + ((i + 1) % n));
+            i = (i + 1) % n;
+        }
+
+        // Critical Section
+        System.out.println("\nProcess " + request + " enters Critical Section");
+        System.out.println("Process " + request + " exits Critical Section");
+
+        // Pass token to next process
+        System.out.println("Token passed to Process " + ((request + 1) % n));
+
+        sc.close();
+    }
+}
+=====================================================================================
+4. WEBSITE SERVICE
+
+
+
+
+
+==================================================================================
+5.SUM OF N ELEMENTS (MPI)
+
+import mpi.MPI;
+
+public class ArraySumMPI {
+
+public static void main(String[] args) {
+
+MPI.Init(args);
+
+int rank MPI.COMM_WORLD.Rank();
+
+int size MPI.COMM_WORLD.Size();
+
+int[] array = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10); // Sample array
+
+int n = array.length;
+
+int localSum = 0:
+
+int globalSum = 0;
+
+// Calculate the local sum
+
+int startIndex = rank (n/size);
+
+int endIndex = (rank == size-1)? (n-1): (startIndex + (n/size)-1);
+
+for (int i= startIndex; i <= endIndex; i++) {
+
+}
+
+localSum+= array[i]:
+
+// Compute the global sum by reducing local sums
+
+MPI.COMM_WORLD.Reduce(new int[]{localSum}, 0, new
+
+int[]{(globalSum), 0, 1, MPI.INT, MPI.SUM, 0);
+
+if (rank == 0) {
+
+}
+
+System.out.println("Global sum:" + globalSum);
+
+MPI.Finalize();
+
+}
+
+}
